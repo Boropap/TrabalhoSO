@@ -13,10 +13,10 @@
 
 
 #define LINHAS        5000  //Linhas matriz
-#define COLUNAS       5000  //Colunas matriz
+#define COLUNAS       5001  //Colunas matriz
 #define SUB_LINHAS    250   //linhas sub-matriz
 #define SUB_COLUNAS   100   //Colunas sub-matriz
-#define SEMENTE       1233  //Semente para gerar numeros aleatórios
+#define SEMENTE       1233  //Semente para gerar numeros aleatórioss
 #define QUANT_THREADS 2     //Define Quantidade das Threads criadas
 
 
@@ -24,7 +24,9 @@ int quantidade_sub_matrizes = 0, contador = 0;
 int** matriz = NULL;
 
 int qtd_submatrizes(int i, int j, int sub_i, int sub_j) {
-    return ((i - sub_i + 1) * (j - sub_j + 1));
+    int submatrizesLinhas = (i + sub_i - 1) / sub_i;
+    int submatrizesColunas = (j + sub_j - 1) / sub_j;
+	return submatrizesLinhas * submatrizesColunas;
 }
 
 // ALOCAR ESPAÇO PARA MATRIZ
@@ -85,6 +87,9 @@ void buscaSerial() {
         }
     }
 
+	quantidade_sub_matrizes = qtd_submatrizes(LINHAS, COLUNAS, SUB_LINHAS, SUB_COLUNAS);
+	printf("\nQuantidade de sub-matrizes: %d\n", quantidade_sub_matrizes);
+
     for (int i = 0; i < LINHAS; i++) {
         for (int j = 0; j < COLUNAS; j++) {
             contador += ehPrimo(matriz[i][j]);
@@ -100,9 +105,13 @@ void buscaSerial() {
 
 }
 
-void* funcaoThreadTeste(void* arg) {
+void* funcaoThreadBusca(void* arg) {
+    
+    int blocoAtual;
+    int numPrimosTotal = 0;
 
 	pthread_t idThread = pthread_self();
+
     printf("Thread ID: %p\n", (void*)&idThread);
     return NULL;
 }
@@ -114,7 +123,7 @@ void buscaParalela() {
 	pthread_t arrayThreads[QUANT_THREADS];
     
     for (arrayPos = 0; arrayPos < QUANT_THREADS; arrayPos++) {
-        pthread_create(&arrayThreads[arrayPos], NULL, funcaoThreadTeste, NULL);
+        pthread_create(&arrayThreads[arrayPos], NULL, funcaoThreadBusca, NULL);
     }
     for (arrayPos = 0; arrayPos < QUANT_THREADS; arrayPos++) {
         pthread_join(arrayThreads[arrayPos], NULL);
