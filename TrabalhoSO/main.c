@@ -14,9 +14,9 @@
 
 #define LINHAS        5000  //Linhas matriz
 #define COLUNAS       5001  //Colunas matriz
-#define SUB_LINHAS    250   //linhas sub-matriz
-#define SUB_COLUNAS   100   //Colunas sub-matriz
-#define SEMENTE       1233  //Semente para gerar numeros aleatórioss
+#define SUB_LINHAS    250   //linhas submatriz
+#define SUB_COLUNAS   100   //Colunas submatriz
+//#define SEMENTE       1233  //Semente para gerar numeros aleatórios fixos
 #define QUANT_THREADS 2     //Define Quantidade das Threads criadas
 
 
@@ -24,9 +24,9 @@ int quantidade_sub_matrizes = 0, contador = 0;
 int** matriz = NULL;
 
 int qtd_submatrizes(int i, int j, int sub_i, int sub_j) {
-    int submatrizesLinhas = (i + sub_i - 1) / sub_i;
-    int submatrizesColunas = (j + sub_j - 1) / sub_j;
-	return submatrizesLinhas * submatrizesColunas;
+	int submatrizesLinhas = (i + sub_i - 1) / sub_i;//Mesmo Calculo que aparece na Função subMatrizes
+    int submatrizesColunas = (j + sub_j - 1) / sub_j;//Mesmo Calculo que aparece na Função subMatrizes
+	return submatrizesLinhas * submatrizesColunas;//Retorna a quantidade total de sub-matrizes baseado na quantidade de sublinhas e subcolunas que cabem na matriz
 }
 
 // ALOCAR ESPAÇO PARA MATRIZ
@@ -52,6 +52,24 @@ int** alocarMatriz() {
     return matriz;
 }
 
+// PREENCHER MATRIZ COM NÚMEROS ALEATÓRIOS
+int** preencheMatriz(){
+
+
+	matriz = alocarMatriz();//Alocar espaço para matriz usando função alocarMatriz
+
+	//srand(SEMENTE);//Gerador de números aleatórios fixos, para usar descomentar essa linha e linha da SEMENTE lá em cima (área dos #defines)
+	srand(time(NULL));//Gerador de números aleatórios
+
+	for (int i = 0; i < LINHAS; i++) {//For para preencher a matriz
+        for (int j = 0; j < COLUNAS; j++) {
+            matriz[i][j] = rand() % 32000;
+        }
+    }
+
+	return  matriz;//Retorna a matriz preenchida
+}
+
 // LIBERAR MEMÓRIA ALOCADA
 void liberarMatriz() {
     for (int i = 0; i < LINHAS; i++) {
@@ -75,36 +93,70 @@ int ehPrimo(int numero) {
 //BUSCA SERIAL
 void buscaSerial() {
 
-    matriz = alocarMatriz();
-    clock_t inicio, fim;
-    double tempo_gasto;
-    inicio = clock();
+	matriz = preencheMatriz();//Armazena matriz com valores aleatórios apartir da função
+	clock_t inicio, fim;//Variáveis que vão ser utilizadas para calcular o tempo de execução
+	double tempo_gasto;//Variável para guardar tempo total de execução
+    inicio = clock();//Inicia contagem de tempo
 
-    srand(SEMENTE);
-    for (int i = 0; i < LINHAS; i++) {
-        for (int j = 0; j < COLUNAS; j++) {
-            matriz[i][j] = rand() % 32000;
-        }
-    }
+	printf("\nQuantidade da matriz: %d linhas por %d colunas\n", LINHAS, COLUNAS);//Imprime tamanho total da matriz
 
-	quantidade_sub_matrizes = qtd_submatrizes(LINHAS, COLUNAS, SUB_LINHAS, SUB_COLUNAS);
-	printf("\nQuantidade de sub-matrizes: %d\n", quantidade_sub_matrizes);
-
-    for (int i = 0; i < LINHAS; i++) {
+	for (int i = 0; i < LINHAS; i++) {//For para percorrer matriz normal, e dizer qual número é primo
         for (int j = 0; j < COLUNAS; j++) {
             contador += ehPrimo(matriz[i][j]);
         }
     }
-    fim = clock();
-    tempo_gasto = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+	fim = clock();//Termina contagem de tempo
+	tempo_gasto = ((double)(fim - inicio)) / CLOCKS_PER_SEC;//Divide tempo em quantidade de ticks por segundo, para mostrar tempo total em segundos
 
-    printf("Tempo de execução busca serial: %.3f segundos\n", tempo_gasto);
-    printf("\nQuantidade de primos: %d\n", contador);
+	printf("Tempo de execução busca serial: %.3f segundos\n", tempo_gasto);//Imprime tempo total de execução
+	printf("\nQuantidade de primos: %d\n", contador);//Imprime quantidade total de primos na matriz
 
-    liberarMatriz(matriz, LINHAS);
+	liberarMatriz(matriz, LINHAS);//Libera memória alocada para matriz
 
 }
 
+void subMatrizes() {
+	int linhaInicial, linhaFinal;//Define ponto inicial e final das linhas de uma submatriz
+    int colunaInicial, colunaFinal;//Define ponto inicial e final das colunas de uma submatriz
+
+	int submatrizesLinhas = (LINHAS + SUB_LINHAS - 1) / SUB_LINHAS;//Quantidade de submatrizes linhas que vão caber na matriz
+    int submatrizesColunas = (COLUNAS + SUB_COLUNAS - 1) / SUB_COLUNAS;//Quantidade de submatrizes colunas que vão caber na matriz
+
+	int totalSubmatrizes = qtd_submatrizes(LINHAS, COLUNAS, SUB_LINHAS, SUB_COLUNAS);//Retorna total de submatrizes
+
+	int contadorSubmatrizes = 0;//Contador para numerar em qual submatriz estamos
+
+	matriz = preencheMatriz();//Armazena matriz com valores aleatórios apartir da função
+
+	for (int i = 0; i < submatrizesLinhas; i++) {//Percorre todas as submatrizes linhas
+		for (int j = 0; j < submatrizesColunas; j++) {//Percorre todas as submatrizes colunas
+
+			linhaInicial = i * SUB_LINHAS;//ex. 0*250 = 0, logo a linha inicial da primeira submatriz é 0
+			linhaFinal = linhaInicial + SUB_LINHAS - 1;//ex. 0+250-1 = 249, logo a linha final da primeira submatriz é 249
+			if (linhaFinal >= LINHAS) linhaFinal = LINHAS - 1;//Caso a linha final ultrapasse o limite da matriz, ajusta para o limite máximo
+
+			colunaInicial = j * SUB_COLUNAS;//ex. 0*100 = 0, logo a coluna inicial da primeira submatriz é 0
+			colunaFinal = colunaInicial + SUB_COLUNAS - 1;//ex. 0+100-1 = 99, logo a coluna final da primeira submatriz é 99
+			if (colunaFinal >= COLUNAS) colunaFinal = COLUNAS - 1;//Caso a coluna final ultrapasse o limite da matriz, ajusta para o limite máximo
+
+
+            printf("\nSub-matriz %d: Linhas [%d-%d], Colunas [%d-%d]\n", contadorSubmatrizes, linhaInicial, linhaFinal, colunaInicial, colunaFinal);//Imprime os limites da submatriz atual
+            
+			//For para imprimir os valores dentro da submatriz atual
+            for (int bi = linhaInicial; bi <= linhaFinal; bi++){
+				printf("\n");
+                for(int ji = colunaInicial; ji <= colunaFinal; ji++){
+                    printf("%d ", matriz[bi][ji]);
+				}
+            }
+
+			contadorSubmatrizes++;//Incrementa contador de para mostrar próxima submatriz
+        }
+    }
+
+}
+
+//FUNÇÃO DAS THREADS INACABADA ----------------------------------------------------------
 void* funcaoThreadBusca(void* arg) {
     
     int blocoAtual;
@@ -116,6 +168,7 @@ void* funcaoThreadBusca(void* arg) {
     return NULL;
 }
 
+//BUSCA PARALELA INACABADA ----------------------------------------------------------
 void buscaParalela() {
 
     int arrayPos;
@@ -135,7 +188,8 @@ void buscaParalela() {
 int main() {
 
     buscaSerial();
-    buscaParalela();
+    //buscaParalela();
+    subMatrizes();
 
     return 0;
 
