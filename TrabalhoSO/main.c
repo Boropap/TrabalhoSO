@@ -117,12 +117,10 @@ int subMatrizes(int blocoLocal) {
 	int linhaInicial, linhaFinal;//Define ponto inicial e final das linhas de uma submatriz
     int colunaInicial, colunaFinal;//Define ponto inicial e final das colunas de uma submatriz
 
-	int submatrizesLinhas = (LINHAS + SUB_LINHAS - 1) / SUB_LINHAS;//Quantidade de submatrizes linhas que vão caber na matriz
+	int submatrizesLinhas = (LINHAS + SUB_LINHAS - 1) / SUB_LINHAS;//Quantidade de submatrizes linhas que vão caber na matriz -> Estava sendo utilizado para impressão de debug
     int submatrizesColunas = (COLUNAS + SUB_COLUNAS - 1) / SUB_COLUNAS;//Quantidade de submatrizes colunas que vão caber na matriz
 
-	int totalSubmatrizes = qtd_submatrizes(LINHAS, COLUNAS, SUB_LINHAS, SUB_COLUNAS);//Retorna total de submatrizes
-
-	int contadorSubmatrizes = 0;//Contador para numerar em qual submatriz estamos
+	int contadorSubmatrizes = 0;//Contador para numerar em qual submatriz estamos -> Estava sendo utilizado para impressão de debug
 
 	int numPrimosLocal = 0;//Variável para contar quantos primos tem na submatriz atual
 
@@ -138,7 +136,7 @@ int subMatrizes(int blocoLocal) {
 	if (colunaFinal >= COLUNAS) colunaFinal = COLUNAS - 1;//Caso a coluna final ultrapasse o limite da matriz, ajusta para o limite máximo
 
 
-    //printf("\nSub-matriz %d: Linhas [%d-%d], Colunas [%d-%d]\n", contadorSubmatrizes, linhaInicial, linhaFinal, colunaInicial, colunaFinal);//Imprime os limites da submatriz atual
+	//printf("\nSub-matriz %d: Linhas [%d-%d], Colunas [%d-%d]\n", contadorSubmatrizes, linhaInicial, linhaFinal, colunaInicial, colunaFinal);//Imprime os limites da submatriz atual -> Estava sendo utilizado para impressão de debug
             
 	//For para passar por cada elemento dentro da submatriz atual
     for (int bi = linhaInicial; bi <= linhaFinal; bi++){
@@ -219,6 +217,7 @@ int main() {
 	printf("\nQuantidade de submatrizes criadas: %d", qtd_submatrizes(LINHAS, COLUNAS, SUB_LINHAS, SUB_COLUNAS));//Total de submatrizes criadas
 	printf("\nQuantidade threads criadas: %d\n", QUANT_THREADS);//Total de threads criadas
     printf("\n________________________________________________________________________\n");
+    
     buscaSerial(matriz);
     totalPrimos = 0;//Zera total de primos para a próxima função
 
