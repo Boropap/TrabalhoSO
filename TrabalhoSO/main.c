@@ -16,11 +16,11 @@
 #define COLUNAS       5001  //Colunas matriz
 #define SUB_LINHAS    250   //linhas submatriz
 #define SUB_COLUNAS   100   //Colunas submatriz
-//#define SEMENTE       1233  //Semente para gerar numeros aleatórios fixos
+#define SEMENTE       1233  //Semente para gerar numeros aleatórios fixos
 #define QUANT_THREADS 2     //Define Quantidade das Threads criadas
 
 
-int quantidade_sub_matrizes = 0, contador = 0;
+int quantidade_sub_matrizes = 0, contador = 0, totalPrimos = 0;
 int** matriz = NULL;
 
 int qtd_submatrizes(int i, int j, int sub_i, int sub_j) {
@@ -58,8 +58,8 @@ int** preencheMatriz(){
 
 	matriz = alocarMatriz();//Alocar espaço para matriz usando função alocarMatriz
 
-	//srand(SEMENTE);//Gerador de números aleatórios fixos, para usar descomentar essa linha e linha da SEMENTE lá em cima (área dos #defines)
-	srand(time(NULL));//Gerador de números aleatórios
+	srand(SEMENTE);//Gerador de números aleatórios fixos, para usar descomentar essa linha e linha da SEMENTE lá em cima (área dos #defines)
+	//srand(time(NULL));//Gerador de números aleatórios, para usar descomentar essa linha, comentar a linha de cima e a linha da SEMENTE lá em cima (área dos #defines)
 
 	for (int i = 0; i < LINHAS; i++) {//For para preencher a matriz
         for (int j = 0; j < COLUNAS; j++) {
@@ -102,14 +102,14 @@ void buscaSerial() {
 
 	for (int i = 0; i < LINHAS; i++) {//For para percorrer matriz normal, e dizer qual número é primo
         for (int j = 0; j < COLUNAS; j++) {
-            contador += ehPrimo(matriz[i][j]);
+            totalPrimos += ehPrimo(matriz[i][j]);
         }
     }
 	fim = clock();//Termina contagem de tempo
 	tempo_gasto = ((double)(fim - inicio)) / CLOCKS_PER_SEC;//Divide tempo em quantidade de ticks por segundo, para mostrar tempo total em segundos
 
 	printf("Tempo de execução busca serial: %.3f segundos\n", tempo_gasto);//Imprime tempo total de execução
-	printf("\nQuantidade de primos: %d\n", contador);//Imprime quantidade total de primos na matriz
+	printf("\nQuantidade de primos: %d\n", totalPrimos);//Imprime quantidade total de primos na matriz
 
 	liberarMatriz(matriz, LINHAS);//Libera memória alocada para matriz
 
@@ -147,12 +147,14 @@ void subMatrizes() {
 				printf("\n");
                 for(int ji = colunaInicial; ji <= colunaFinal; ji++){
                     printf("%d ", matriz[bi][ji]);
+					totalPrimos += ehPrimo(matriz[bi][ji]);//Verifica se o número é primo e incrementa o total de primos
 				}
             }
 
 			contadorSubmatrizes++;//Incrementa contador de para mostrar próxima submatriz
         }
     }
+	printf("\n\nQuantidade total de Primos: %d\n", totalPrimos);
 
 }
 
@@ -189,6 +191,7 @@ int main() {
 
     buscaSerial();
     //buscaParalela();
+	totalPrimos = 0;//Zera total de primos para a próxima função
     subMatrizes();
 
     return 0;
