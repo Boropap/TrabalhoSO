@@ -113,6 +113,7 @@ void buscaSerial(int** matriz) {
 
 }
 
+//LÓGICA PARA CADA THREAD CONTAR PRIMOS EM SUBMATRIZES
 int subMatrizes(int blocoLocal) {
 	int linhaInicial, linhaFinal;//Define ponto inicial e final das linhas de uma submatriz
     int colunaInicial, colunaFinal;//Define ponto inicial e final das colunas de uma submatriz
@@ -149,7 +150,7 @@ int subMatrizes(int blocoLocal) {
 
 }
 
-//FUNÇÃO DAS THREADS
+//FUNÇÃO DAS THREADS -> O que cada thread vai executar
 void* funcaoThreadBusca(void* arg) {
     
     int numPrimosSubMatriz = 0;//Variavel para contar quantos primos a thread encontrou
@@ -177,7 +178,7 @@ void* funcaoThreadBusca(void* arg) {
     return NULL;
 }
 
-//BUSCA PARALELA INACABADA
+//BUSCA PARALELA -> Inicia as threads e gerencia o tempo de execução
 void buscaParalela(int** matriz) {
 
 
