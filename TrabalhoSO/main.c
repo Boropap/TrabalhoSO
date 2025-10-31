@@ -12,11 +12,11 @@
 #include <time.h>
 
 
-#define LINHAS        5000  //Linhas matriz
-#define COLUNAS       5001  //Colunas matriz
-#define SUB_LINHAS    250   //linhas submatriz
+#define LINHAS        10000 //Linhas matriz
+#define COLUNAS       10000 //Colunas matriz
+#define SUB_LINHAS    100   //linhas submatriz
 #define SUB_COLUNAS   100   //Colunas submatriz
-//#define SEMENTE       1233  //Semente para gerar numeros aleatórios fixos
+#define SEMENTE       1233  //Semente para gerar numeros aleatórios fixos
 #define QUANT_THREADS 2     //Define Quantidade das Threads criadas
 
 
@@ -60,8 +60,8 @@ int** preencheMatriz(){
 
 	matriz = alocarMatriz();//Alocar espaço para matriz usando função alocarMatriz
 
-	//srand(SEMENTE);//Gerador de números aleatórios fixos, para usar descomentar essa linha e linha da SEMENTE lá em cima (área dos #defines)
-	srand(time(NULL));//Gerador de números aleatórios, para usar descomentar essa linha, comentar a linha de cima e a linha da SEMENTE lá em cima (área dos #defines)
+	//srand(SEMENTE);//Gerador de números aleatórios fixos, para usar descomentar essa linha e comentar a linha de baixo
+	srand(time(NULL));//Gerador de números aleatórios, para usar descomentar essa linha, comentar a linha de cima
 
 	for (int i = 0; i < LINHAS; i++) {//For para preencher a matriz
         for (int j = 0; j < COLUNAS; j++) {
